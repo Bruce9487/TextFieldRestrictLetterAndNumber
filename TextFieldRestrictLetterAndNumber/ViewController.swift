@@ -9,12 +9,40 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    @IBOutlet weak var textfield: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        textfield.delegate = self
     }
-
 
 }
 
+extension ViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        do {
+            let regex = try NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: [])
+            if regex.firstMatch(in: string, options: [], range: NSMakeRange(0, string.count)) != nil {
+                return false
+            }
+        }
+        catch {
+            print("ERROR")
+        }
+        return true
+    }
+    
+}
+
+extension String {
+    
+    var containsValidCharacter: Bool {
+        let characterSet = CharacterSet(charactersIn: "")
+        let range = (self as NSString).rangeOfCharacter(from: characterSet)
+        return range.location != NSNotFound
+    }
+}
